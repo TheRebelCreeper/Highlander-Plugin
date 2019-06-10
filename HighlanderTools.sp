@@ -13,8 +13,8 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	RegAdminCmd("sm_move", Command_SetTeam, ADMFLAG_SLAY);
-	RegAdminCmd("sm_reload", Command_ReloadMap, ADMFLAG_SLAY);
+	RegAdminCmd("sm_move", Command_SetTeam, ADMFLAG_CHANGEMAP);
+	RegAdminCmd("sm_reload", Command_ReloadMap, ADMFLAG_CONFIG);
 }
 
 public Action Command_SetTeam(int client, int args)
