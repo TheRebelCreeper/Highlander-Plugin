@@ -2,6 +2,8 @@
 
 #include <sourcemod>
 
+Handle sv_password;
+Handle rcon_password;
 public Plugin:myinfo = 
 {
 	name = "Highlander Tools",
@@ -15,6 +17,58 @@ public OnPluginStart()
 {
 	RegAdminCmd("sm_move", Command_SetTeam, ADMFLAG_KICK);
 	RegAdminCmd("sm_reload", Command_ReloadMap, ADMFLAG_CHANGEMAP);
+	RegAdminCmd("sm_password", Command_Password, ADMFLAG_ROOT);
+	
+	sv_password = FindConVar("sv_password");
+	rcon_password = FindConVar("rcon_password");
+}
+
+public Action Command_Password(int client, int args)
+{
+	if (args < 1 || args > 2)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_password <rcon | pass> [password]");
+		ReplyToCommand(client, "The first argument specifies whether to change the rcon or password");
+		ReplyToCommand(client, "The rcon/password will be set to the second argument, if none is provided a random password is generated");
+		return Plugin_Handled;
+	}
+	
+	char password[256];
+	if (args == 1)
+	{
+		int r;
+		for (int i = 0; i < 16; i++)
+		{
+			r = GetRandomInt(0, 1);
+			if (r == 0)
+			{
+				password[i] = 'l';
+			}
+			else
+			{
+				password[i] = '|';
+			}
+		}
+		password[16] = 0;
+	}
+	else
+	{
+		GetCmdArg(2, password, sizeof(password));
+	}
+	
+	char arg1[32];
+	GetCmdArg(1, arg1, sizeof(arg1));
+	if (strcmp(arg1, "rcon", false) == 0)
+	{
+		ReplyToCommand(client, "New rcon password: %s", password);
+		SetConVarString(rcon_password, password);
+	}
+	else if (strcmp(arg1, "pass", false) == 0)
+	{
+		ReplyToCommand(client, "New password: %s", password);
+		SetConVarString(sv_password, password);
+	}
+	return Plugin_Handled;
 }
 
 public Action Command_SetTeam(int client, int args)
