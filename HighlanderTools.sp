@@ -9,7 +9,7 @@ public Plugin:myinfo =
 	name = "Highlander Tools",
 	author = "Rebel",
 	description = "Puts people on the right team for Highlander",
-	version = "1.0",
+	version = "1.2",
 	url = "http://www.sourcemod.net/"
 }
 
